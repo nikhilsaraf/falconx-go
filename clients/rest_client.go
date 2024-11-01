@@ -145,6 +145,36 @@ func (client *RestClient) GetTradingPairs() ([]TokenPair, error) {
 	return result, nil
 }
 
+type QuoteResponse3 struct {
+	Status          string           `json:"status"`
+	FxQuoteId       string           `json:"fx_quote_id"`
+	ClientOrderId   *string          `json:"client_order_id"`
+	ClientOrderUuid *string          `json:"client_order_uuid"`
+	Platform        string           `json:"platform"`
+	TokenPair       TokenPair        `json:"token_pair"`
+	Quantity        Quantity3        `json:"quantity_requested"`
+	SideRequested   string           `json:"side_requested"`
+	QuoteTime       time.Time        `json:"t_quote"`
+	ExpiryTime      time.Time        `json:"t_expiry"`
+	ExecutionTime   *time.Time       `json:"t_execute"` // Nullable field
+	IsFilled        bool             `json:"is_filled"`
+	GrossFeeBps     float64          `json:"gross_fee_bps"`
+	GrossFeeUsd     float64          `json:"gross_fee_usd"`
+	RebateBps       float64          `json:"rebate_bps"`
+	RebateUsd       float64          `json:"rebate_usd"`
+	FeeBps          float64          `json:"fee_bps"`
+	FeeUsd          float64          `json:"fee_usd"`
+	SideExecuted    *string          `json:"side_executed"` // Nullable field
+	TraderEmail     string           `json:"trader_email"`
+	OrderType       string           `json:"order_type"`
+	Error           *FalconXError    `json:"error"`
+	PositionIn      Quantity3        `json:"position_in"`
+	PositionOut     Quantity3        `json:"position_out"`
+	Warnings        []FalconXWarning `json:"warnings"`
+	BuyPrice        float64          `json:"buy_price"`
+	SellPrice       float64          `json:"sell_price"`
+}
+
 // GetQuote gets a two_way, buy or sell quote for a token pair.
 //         :param base: (str) base token e.g. BTC, ETH
 //         :param quote: (str) quote token e.g. USD, BTC
@@ -176,7 +206,12 @@ func (client *RestClient) GetTradingPairs() ([]TokenPair, error) {
 func (client *RestClient) GetQuote(quoteParams QuoteRequest) (QuoteResponse, error) {
 	var result QuoteResponse
 	_, err := client.Request("POST", "/v1/quotes", quoteParams, &result)
+	return result, err
+}
 
+func (client *RestClient) GetQuote3(quoteParams QuoteRequest) (QuoteResponse3, error) {
+	var result QuoteResponse3
+	_, err := client.Request("POST", "/v3/quotes", quoteParams, &result)
 	return result, err
 }
 
